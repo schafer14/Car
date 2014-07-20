@@ -149,11 +149,17 @@ exports.populate = function() {
 						var attr = $(this).find('dd').html().trim();
 						if (map[title]) {
 							if (map[title] === 'make') {
-								car.make = $(this).find('dd').find('a').html().trim();
+								if ($(this).find('dd').find('a').html()) {
+									car.make = $(this).find('dd').find('a').html().trim();
+								}
 							} else if (map[title] === 'model') {
-								car.model = $(this).find('dd').find('a').html().trim();
+								if ($(this).find('dd').find('a').html()) {
+									car.model = $(this).find('dd').find('a').html().trim();
+								}
 							} else if (map[title] === 'year') {
-								car.year = $(this).find('dd').find('a').html().trim();
+								if ($(this).find('dd').find('a').html()) {
+									car.year = $(this).find('dd').find('a').html().trim();
+								}
 							} else if (map[title] === 'registered') {
 								car.registered = attr === 'Yes' ? true : false;
 							} else {
