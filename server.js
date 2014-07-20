@@ -47,6 +47,8 @@ function route () {
 		case 'car':
 			controllers.cars.search(argv);
 			break;
+		case: 'auto':
+			controllers.cars.auto();
 		default: 
 			console.log(help);
 			process.exit(0);

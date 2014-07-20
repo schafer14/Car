@@ -10,10 +10,6 @@ var Car = mongoose.model('Car');
 
 exports.search = function(args) {
 	var url = args.next ? args.next : buildUrl(args);
-	console.log(url);
-	if (url  === 'Searching http://www.gumtree.com.au/undefined') {
-		process.exit(0);
-	}
 
 	var options = {
 		url: url,
@@ -76,7 +72,8 @@ function nextButton(body) {
 
 	setTimeout(function() {
 		if (next === undefined) {
-			process.exit(0);
+			console.log('done');
+			return 'done';
 		} else {
 			var args = {
 				next: 'http://www.gumtree.com.au/' + next,
@@ -102,4 +99,27 @@ function buildUrl(args) {
 	
 	var url = base + make + year + id + price;
 	return url;
+}
+
+exports.auto = function() {
+	setInterval(function() {
+		exports.search({
+			make: 'honda',
+			from: 2000,
+			min: 2000,
+			max: 6000,
+		});
+		exports.search({
+			make: 'toyota',
+			from: 2000,
+			min: 2000,
+			max: 6000,
+		});
+		exports.search({
+			make: 'subaru',
+			from: 2000,
+			min: 2000,
+			max: 6000,
+		});
+	}, 1000 * 60 * 15);
 }
