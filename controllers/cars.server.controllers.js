@@ -63,9 +63,7 @@ function parse (body) {
 				car.save(function(err) {
 					if (err) throw err;
 				});
-			} else {
-				process.exit(0);
-			};
+			}
 		});
 
 	});
