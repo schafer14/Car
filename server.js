@@ -49,6 +49,7 @@ function route () {
 			break;
 		case 'auto':
 			controllers.cars.auto();
+			break;
 		default: 
 			console.log(help);
 			process.exit(0);
