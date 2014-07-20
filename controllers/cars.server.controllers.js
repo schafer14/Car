@@ -18,21 +18,12 @@ exports.search = function(args) {
 	    }
 	}
 
-	if (args.text || args.t) {
-		if (args.name) {
-			HTML.findOne({name: name})
-				.sort('-created')
-				.exec(function(err, html) {
-					parse(html.body);
-				});
-		}
-	} else {
-		console.log('Searching ' + options.url);
-		request(options, function(err, response, body) {
-			if (err) throw err;
-			nextButton(body);
-		});
-	}
+	console.log('Searching ' + options.url);
+	request(options, function(err, response, body) {
+		if (err) throw err;
+		nextButton(body);
+	});
+	
 };
 
 function parse (body) {
@@ -122,4 +113,64 @@ exports.auto = function() {
 			max: 6000,
 		});
 	}, 1000 * 60 * 15);
+}
+
+exports.populate = function() {
+	var map = {
+		Model: 'model',
+		Make: 'make',
+		Year: 'year',
+		Transmission: 'transmission',
+		Registered: 'registered',
+		Kilometres: 'kms',
+		'Body Type': 'body',
+	};
+	Car.find({complete: false})
+	.exec(function(err, cars) {
+
+		_.forEach(cars, function(car) {
+			setTimeout(function() {
+				
+				console.log(car.name);
+				var url = 'http://www.gumtree.com.au' + car.url;
+				var reqOptions = {
+					url: url,
+				    headers: {
+				        'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36',
+				    }
+				};
+				request(reqOptions, function(err, response, body) {
+					if (err) throw err;
+					
+					var temp = {};
+					var $ = cheerio.load(body);
+					var listed = $('div#ad-attributes dl').each(function(index, attribute) {
+						var title = $(this).find('dt').html().trim().slice(0, -1);
+						var attr = $(this).find('dd').html().trim();
+						if (map[title]) {
+							if (map[title] === 'make') {
+								car.make = $(this).find('dd').find('a').html().trim();
+							} else if (map[title] === 'model') {
+								car.model = $(this).find('dd').find('a').html().trim();
+							} else if (map[title] === 'year') {
+								car.year = $(this).find('dd').find('a').html().trim();
+							} else if (map[title] === 'registered') {
+								car.registered = attr === 'Yes' ? true : false;
+							} else {
+								car[map[title]] = attr;
+							}
+						};
+						car.complete = true;
+						car.save(function(err) {
+							if (err) throw err;
+							console.log(car);
+						});
+					});
+				});
+			}, Math.random() * (7000 - 3000) + 3000);
+
+		});
+		
+		
+	});
 }

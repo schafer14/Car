@@ -50,6 +50,9 @@ function route () {
 		case 'auto':
 			controllers.cars.auto();
 			break;
+		case 'populate':
+			controllers.cars.populate();
+			break;
 		default: 
 			console.log(help);
 			process.exit(0);
