@@ -10,6 +10,7 @@ var Car = mongoose.model('Car');
 
 exports.search = function(args) {
 	var url = args.next ? args.next : buildUrl(args);
+	console.log(url);
 	if (url  === 'Searching http://www.gumtree.com.au/undefined') {
 		process.exit(0);
 	}
@@ -29,21 +30,6 @@ exports.search = function(args) {
 					parse(html.body);
 				});
 		}
-	} else if (args.save || args.s) {
-		console.log('Saving file: ' + url);
-		request(options, function(err, response, body) {
-			if (err) throw err;
-			var html = new HTML({
-				url: url,
-				body: body,
-			});
-
-			html.save(function(err) {
-				if (err) throw err;
-				console.log('File has been saved.');
-				process.exit(0);
-			});
-		});
 	} else {
 		console.log('Searching ' + options.url);
 		request(options, function(err, response, body) {
@@ -77,6 +63,8 @@ function parse (body) {
 				car.save(function(err) {
 					if (err) throw err;
 				});
+			} else {
+				process.exit(0);
 			};
 		});
 
@@ -89,7 +77,7 @@ function nextButton(body) {
 	var next = $('a[title=Next]').attr('href');
 
 	setTimeout(function() {
-		if (next === 'undefined') {
+		if (next === undefined) {
 			process.exit(0);
 		} else {
 			var args = {
