@@ -10,6 +10,9 @@ var Car = mongoose.model('Car');
 
 exports.search = function(args) {
 	var url = args.next ? args.next : buildUrl(args);
+	if (url  === 'Searching http://www.gumtree.com.au/undefined') {
+		process.exit(0);
+	}
 
 	var options = {
 		url: url,
